@@ -15,7 +15,7 @@
 #include "packet.h"
 #include "message.h"
 #include "keychain.h"
-#include "nodes.h"
+#include "node_table.h"
 #include "duty_cycle.h"
 
 #include <array>
@@ -29,7 +29,7 @@ namespace loraman
     {
     public:
         LoRaMAN(PacketQueue &rx_queue, PacketQueue &tx_queue,
-                Keychain &keychain, NodeTable &nodes, DutyCycle &duty);
+                Keychain &keychain, DutyCycle &duty);
 
         // --- Inbound: build a Message from user content and queue it -----------
         bool send_chat(const char *content);
@@ -56,8 +56,8 @@ namespace loraman
         PacketQueue &rx_queue_;
         PacketQueue &tx_queue_;
         Keychain &keychain_;
-        NodeTable &nodes_;
         DutyCycle &duty_;
+        NodeTable nodes_;
 
         // --- app-level send queue (Messages with send_time + num_tx) ----------
         static constexpr size_t kSendQueueCapacity = 10;

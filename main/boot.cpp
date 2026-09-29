@@ -3,7 +3,7 @@
 #include "config/config_store.h"
 #include "loraman/duty_cycle.h"
 #include "loraman/loraman.h"
-#include "loraman/nodes.h"
+#include "loraman/node_table.h"
 #include "loraman/packet_queue.h"
 #include "loraman/radio_hal.h"
 #include "loraman/radio_interface.h"
@@ -273,8 +273,7 @@ void loraman::boot()
 
     static DutyCycle duty_cycle(kDutyCycleSlots, kDutyCycleSlotDurationSeconds);
 
-    static NodeTable nodes;
-    static LoRaMAN mesh(rx_queue, tx_queue, keychain, nodes, duty_cycle);
+    static LoRaMAN mesh(rx_queue, tx_queue, keychain, duty_cycle);
 
     static RadioInterface radio_interface(radio, radio_hal, radiolib_radio_config, rx_queue, tx_queue, duty_cycle);
 

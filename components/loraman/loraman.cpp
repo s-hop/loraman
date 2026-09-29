@@ -32,14 +32,12 @@ namespace loraman
         dst[MSG_NICK_LEN] = '\0';
     }
 
+
     // ---------------------------------------------------------------------------
-        LoRaMAN::LoRaMAN(PacketQueue &rx_queue, PacketQueue &tx_queue,
-                     Keychain &keychain, NodeTable &nodes, DutyCycle &duty)
-                : rx_queue_(rx_queue),
-                    tx_queue_(tx_queue),
-          keychain_(keychain),
-          nodes_(nodes),
-          duty_(duty)
+    // Constructor
+    // ---------------------------------------------------------------------------
+    LoRaMAN::LoRaMAN(PacketQueue &rx_queue, PacketQueue &tx_queue, Keychain &keychain, DutyCycle &duty)
+        : rx_queue_(rx_queue), tx_queue_(tx_queue), keychain_(keychain), duty_(duty), nodes_()
     {
         for (size_t i = 0; i < kRssiHistorySize; ++i)
             rssi_history_[i] = -100;

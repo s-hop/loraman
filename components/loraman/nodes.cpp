@@ -1,4 +1,4 @@
-#include "loraman/nodes.h"
+#include "loraman/node_table.h"
 
 #include <cstring>
 #include <cstdint>
