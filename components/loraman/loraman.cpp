@@ -355,7 +355,9 @@ namespace loraman
 
     void LoRaMAN::pump_send_queue()
     {
-        if (duty_.get_duty_cycle() >= float(config::mesh_cfg.duty_cycle_limit))
+        const float duty_cycle = duty_.get_duty_cycle();
+
+        if (duty_cycle >= float(config::mesh_cfg.duty_cycle_limit))
         {
             if (!duty_limited_)
             {
@@ -370,7 +372,7 @@ namespace loraman
                     ++purged_tx;
 
                 ESP_LOGW(kTag, "!! duty cycle %.2f%% >= limit %u%%; purged %zu send + %zu tx",
-                       double(duty_.get_duty_cycle()),
+                       double(duty_cycle),
                        unsigned(config::mesh_cfg.duty_cycle_limit),
                        purged_send, purged_tx);
             }
@@ -381,7 +383,7 @@ namespace loraman
         {
             duty_limited_ = false;
             ESP_LOGI(kTag, "-- duty cycle %.2f%% below limit; resuming TX",
-                   duty_.get_duty_cycle());
+                   double(duty_cycle));
         }
 
         uint32_t now = time::now_ms();
