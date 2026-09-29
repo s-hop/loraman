@@ -8,7 +8,7 @@
 
 namespace loraman {
 
-class Nodes
+class NodeTable
 {
 public:
     static constexpr size_t MAX_NODES = 32;
@@ -23,7 +23,7 @@ public:
         bool used = false;
     };
 
-    Nodes() = default;
+    NodeTable() = default;
 
     // Add a new node to the table. Returns ErrCode::NodeTableFull if the
     // table is at MAX_NODES capacity.

@@ -29,7 +29,7 @@ namespace loraman
     {
     public:
         LoRaMAN(PacketQueue &rx_queue, PacketQueue &tx_queue,
-                Keychain &keychain, Nodes &nodes, DutyCycle &duty);
+                Keychain &keychain, NodeTable &nodes, DutyCycle &duty);
 
         // --- Inbound: build a Message from user content and queue it -----------
         bool send_chat(const char *content);
@@ -42,7 +42,7 @@ namespace loraman
 
         // --- Accessors --------------------------------------------------------
         const Keychain &keychain() const { return keychain_; }
-        const Nodes &nodes() const { return nodes_; }
+        const NodeTable &nodes() const { return nodes_; }
         const DutyCycle &duty_cycle() const { return duty_; }
         size_t send_queue_len() const { return send_count_; }
 
@@ -56,7 +56,7 @@ namespace loraman
         PacketQueue &rx_queue_;
         PacketQueue &tx_queue_;
         Keychain &keychain_;
-        Nodes &nodes_;
+        NodeTable &nodes_;
         DutyCycle &duty_;
 
         // --- app-level send queue (Messages with send_time + num_tx) ----------

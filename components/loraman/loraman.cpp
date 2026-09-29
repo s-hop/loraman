@@ -34,7 +34,7 @@ namespace loraman
 
     // ---------------------------------------------------------------------------
         LoRaMAN::LoRaMAN(PacketQueue &rx_queue, PacketQueue &tx_queue,
-                     Keychain &keychain, Nodes &nodes, DutyCycle &duty)
+                     Keychain &keychain, NodeTable &nodes, DutyCycle &duty)
                 : rx_queue_(rx_queue),
                     tx_queue_(tx_queue),
           keychain_(keychain),
@@ -519,9 +519,9 @@ namespace loraman
         // node_flush_threshold is in seconds → convert to ms.
         uint32_t threshold_ms = uint32_t(config::mesh_cfg.node_flush_threshold) * 1000u;
 
-        for (size_t i = 0; i < Nodes::MAX_NODES; ++i)
+        for (size_t i = 0; i < NodeTable::MAX_NODES; ++i)
         {
-            Nodes::Entry *n = nodes_.at_mutable(i);
+            NodeTable::Entry *n = nodes_.at_mutable(i);
             if (!n || !n->used || n->timedout)
                 continue;
             if (n->last_seen_ms == 0)

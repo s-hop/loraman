@@ -49,7 +49,7 @@ enum class ErrCode : uint32_t {
     QueueEmpty          = 0x0601,  // not always an error
     PacketOversize      = 0x0602,
 
-    // Nodes (0x07xx)
+    // NodeTable (0x07xx)
     NodeTableFull       = 0x0700,
     NodeNotFound        = 0x0701,
 

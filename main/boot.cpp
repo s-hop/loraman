@@ -273,7 +273,7 @@ void loraman::boot()
 
     static DutyCycle duty_cycle(kDutyCycleSlots, kDutyCycleSlotDurationSeconds);
 
-    static Nodes nodes;
+    static NodeTable nodes;
     static LoRaMAN mesh(rx_queue, tx_queue, keychain, nodes, duty_cycle);
 
     static RadioInterface radio_interface(radio, radio_hal, radiolib_radio_config, rx_queue, tx_queue, duty_cycle);

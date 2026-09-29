@@ -8,12 +8,12 @@ namespace loraman
 
     // Compare two 3-char nicks for equality. Caller is responsible for
     // ensuring non-null input — null is a bug at the call site, not here.
-    bool Nodes::nick_eq(const char *a, const char *b)
+    bool NodeTable::nick_eq(const char *a, const char *b)
     {
         return strncmp(a, b, NICK_LEN) == 0;
     }
 
-    const Nodes::Entry *Nodes::find(const char *nick3) const
+    const NodeTable::Entry *NodeTable::find(const char *nick3) const
     {
         for (size_t i = 0; i < total_; ++i)
             if (table_[i].used && nick_eq(table_[i].nick.data(), nick3))
@@ -21,7 +21,7 @@ namespace loraman
         return nullptr;
     }
 
-    Nodes::Entry *Nodes::find_mutable(const char *nick3)
+    NodeTable::Entry *NodeTable::find_mutable(const char *nick3)
     {
         for (size_t i = 0; i < total_; ++i)
             if (table_[i].used && nick_eq(table_[i].nick.data(), nick3))
@@ -29,12 +29,12 @@ namespace loraman
         return nullptr;
     }
 
-    bool Nodes::seen(const char *nick3) const
+    bool NodeTable::seen(const char *nick3) const
     {
         return find(nick3) != nullptr;
     }
 
-    Result<void> Nodes::add(const char *nick3, uint32_t now_ms, int8_t rssi)
+    Result<void> NodeTable::add(const char *nick3, uint32_t now_ms, int8_t rssi)
     {
         if (!nick3)
             return fail(ErrCode::InvalidArgument);
@@ -67,7 +67,7 @@ namespace loraman
         return ok();
     }
 
-    void Nodes::update(const char *nick3, uint32_t now_ms, int8_t rssi)
+    void NodeTable::update(const char *nick3, uint32_t now_ms, int8_t rssi)
     {
         Entry *n = find_mutable(nick3);
         if (!n)
@@ -86,7 +86,7 @@ namespace loraman
         n->last_rssi = rssi;
     }
 
-    void Nodes::timeout(const char *nick3)
+    void NodeTable::timeout(const char *nick3)
     {
         Entry *n = find_mutable(nick3);
         if (!n || n->timedout)
