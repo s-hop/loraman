@@ -15,6 +15,7 @@ namespace loraman
     static constexpr uint32_t kSendMaxDelayMs = 2000;
     static constexpr uint32_t kTxAgainMinDelayMs = 3000;
     static constexpr uint32_t kTxAgainMaxDelayMs = 8000;
+    static constexpr size_t kMaxRxDrainPerPoll = 3;
     static constexpr const char *kTag = "[LMAN]";
 
     // Convenience accessor: the device nick from config, as a const char*.
@@ -137,8 +138,13 @@ namespace loraman
     void LoRaMAN::drain_rx_queue()
     {
         Packet pkt;
-        while (rx_queue_.pop(pkt).has_value())
+        for (size_t i = 0; i < kMaxRxDrainPerPoll; ++i)
+        {
+            if (!rx_queue_.pop(pkt).has_value())
+                break;
+
             handle_received_packet(pkt);
+        }
     }
 
     void LoRaMAN::handle_received_packet(const Packet &pkt)
@@ -159,7 +165,6 @@ namespace loraman
         {
             if (mark_as_processed(m))
             {
-                
                 ESP_LOGI(kTag, "-- ignoring duplicate msg %04x", m.uid);
                 return;
             }
