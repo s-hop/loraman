@@ -1,6 +1,7 @@
 #include "boot.h"
 
 #include "config/config_store.h"
+#include "console/console.h"
 #include "loraman/duty_cycle.h"
 #include "loraman/loraman.h"
 #include "loraman/node_table.h"
@@ -81,6 +82,8 @@ static Result<void> load_keychain(Keychain &keychain)
             break;
     }
     nvs_release_iterator(it);
+
+    ESP_LOGD(kTag, "NVS keychain loaded successfully");
     return ok();
 }
 
@@ -95,6 +98,7 @@ static Result<void> load_mesh_config(const Keychain &keychain)
     ESP_LOGD(kTag, "NVS mesh configuration opened successfully");
 
     auto nvs_get_or_fail = [&](const char *key, auto &out) -> Result<void> {
+        ESP_LOGD(kTag, "Reading mesh config key '%s' from NVS", key);
         status = nvs_mesh->get_item(key, out);
         if (status != ESP_OK)
             return fail(ErrCode::NvsReadFailed, status);
@@ -269,16 +273,22 @@ void loraman::boot()
     static EspHal radio_hal(6, 5, 4);
     static Module radio_mod(&radio_hal, 7, 1, 2, 3);
     static LR1121 radio(&radio_mod);
+
     ESP_LOGD(kTag, "Initialising radio module...");
     ConfigLoRa_t radiolib_radio_config{};
     if (auto r = load_radio_config(radiolib_radio_config); !r.has_value())
         init_fail_fatal(r, "load_radio_config()");
-    static RadioInterface radio_interface(radio, radio_hal, radiolib_radio_config, rx_queue, tx_queue, duty_cycle);
 
+    static RadioInterface radio_interface(radio, radio_hal, radiolib_radio_config, rx_queue, tx_queue, duty_cycle);
     if (auto r = init_radio(radio_interface); !r.has_value())
         init_fail_fatal(r, "init_radio()");
-
     ESP_LOGD(kTag, "Radio module initialised successfully");
+
+    ESP_LOGD(kTag, "Initialising console...");
+    if (auto r = console::init(); !r.has_value())
+        init_fail_fatal(r, "console::init()");
+    ESP_LOGD(kTag, "Console initialised successfully");
+
     ESP_LOGD(kTag, "Device initialisation complete. Entering main loop...");
 
     for (;;)

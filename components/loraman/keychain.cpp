@@ -114,8 +114,6 @@ namespace loraman
 
         const uint8_t expected_len = uint8_t(enc_len - 2);
 
-        // Scratch buffer sized to the protocol max (MSG_MAX_CONTENT + MSG_PAYLOAD_OVR).
-        // See review doc B6 — was hardcoded 256, now tracks the protocol constant.
         std::array<uint8_t, max_payload> scratch{};
 
         for (size_t i = 0; i < count_; ++i)

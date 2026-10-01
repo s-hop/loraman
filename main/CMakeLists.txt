@@ -2,6 +2,7 @@ idf_component_register(SRCS "main.cpp" "boot.cpp"
                     INCLUDE_DIRS "."
                     REQUIRES
                         loraman
+                        console
                         nvs_flash
                         freertos
                         esp_system
