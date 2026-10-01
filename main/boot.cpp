@@ -130,7 +130,7 @@ static Result<void> load_mesh_config(const Keychain &keychain)
         !r.has_value())
         return r;
     uint8_t hello_msg{};
-    if (auto r = nvs_get_or_fail("hello?", hello_msg); !r.has_value())
+    if (auto r = nvs_get_or_fail("hello", hello_msg); !r.has_value())
         return r;
     config::mesh_cfg.hello = (hello_msg != 0);
     if (auto r = nvs_get_or_fail("hello_delay_min", config::mesh_cfg.hello_delay_min);
