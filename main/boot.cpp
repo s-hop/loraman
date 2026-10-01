@@ -249,32 +249,30 @@ void loraman::boot()
 
     ESP_LOGD(kTag, "NVS initialised successfully");
 
-    static Keychain keychain;
+    static Packet rxStore[kRxQueueCapacity];
+    static Packet txStore[kTxQueueCapacity];
+    static PacketQueue rx_queue(rxStore, std::size(rxStore));
+    static PacketQueue tx_queue(txStore, std::size(txStore));
+
+        static Keychain keychain;
     if (auto r = load_keychain(keychain); !r.has_value())
         init_fail_fatal(r, "load_keychain()");
 
     if (auto r = load_mesh_config(keychain); !r.has_value())
         init_fail_fatal(r, "load_mesh_config()");
 
-    // TODO: Create pin layout headers for each supported board and use them here instead of hardcoding pin numbers.
-    static EspHal radio_hal(6, 5, 4);
-    static Module radio_mod(&radio_hal, 7, 1, 2, 3);
-    static LR1121 radio(&radio_mod);
-
-    ESP_LOGD(kTag, "Initialising radio module...");
-    ConfigLoRa_t radiolib_radio_config{};
-    if (auto r = load_radio_config(radiolib_radio_config); !r.has_value())
-        init_fail_fatal(r, "load_radio_config()");
-
-    static Packet rxStore[kRxQueueCapacity];
-    static Packet txStore[kTxQueueCapacity];
-    static PacketQueue rx_queue(rxStore, std::size(rxStore));
-    static PacketQueue tx_queue(txStore, std::size(txStore));
-
     static DutyCycle duty_cycle(kDutyCycleSlots, kDutyCycleSlotDurationSeconds);
 
     static LoRaMAN mesh(rx_queue, tx_queue, keychain, duty_cycle);
 
+    // TODO: Create pin layout headers for each supported board and use them here instead of hardcoding pin numbers.
+    static EspHal radio_hal(6, 5, 4);
+    static Module radio_mod(&radio_hal, 7, 1, 2, 3);
+    static LR1121 radio(&radio_mod);
+    ESP_LOGD(kTag, "Initialising radio module...");
+    ConfigLoRa_t radiolib_radio_config{};
+    if (auto r = load_radio_config(radiolib_radio_config); !r.has_value())
+        init_fail_fatal(r, "load_radio_config()");
     static RadioInterface radio_interface(radio, radio_hal, radiolib_radio_config, rx_queue, tx_queue, duty_cycle);
 
     if (auto r = init_radio(radio_interface); !r.has_value())
