@@ -41,8 +41,9 @@ enum class ErrCode : uint32_t {
     RadioRxFailed       = 0x0402,
     RadioTimeout        = 0x0403,
 
-    // Platform (0x05xx)
-    PlatformInitFailed  = 0x0500,
+    // Console (0x05xx)
+    ConsoleInitFailed   = 0x0500,
+    ConsoleRegCmdFailed = 0x0501,
 
     // Queue (0x06xx)
     QueueFull           = 0x0600,
